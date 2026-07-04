@@ -1,6 +1,6 @@
 # Darius Mills — Data Center & Cybersecurity Resume
 
-Live site: https://yourusername.github.io/yourname-resume/
+Live site: (https://dmills6.github.io/Darius-Mills-Resume/)
 
 ## About
 
@@ -19,10 +19,6 @@ This is my personal interactive resume, built to showcase my background as a Sec
 
 - HTML5 / CSS3 (custom design, no framework)
 - Google Fonts (IBM Plex Mono, Inter)
-
-## View it live
-
-🔗 [yourusername.github.io/yourname-resume](https://yourusername.github.io/yourname-resume/)
 
 ## Contact
 
