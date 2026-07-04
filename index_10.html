@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Darius Mills — Data Center & Cybersecurity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0B0E11;
+    --panel: #12161B;
+    --panel-2: #181D24;
+    --line: #232A32;
+    --text: #E7ECEF;
+    --muted: #8A97A3;
+    --accent: #54E0C7;       /* network teal */
+    --accent-dim: #2C5C53;
+    --amber: #F0A93B;        /* alert amber */
+    --font-mono: 'IBM Plex Mono', monospace;
+    --font-body: 'Inter', sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    line-height:1.6;
+  }
+  a{color:inherit;text-decoration:none;}
+
+  .wrap{max-width:1080px;margin:0 auto;padding:0 28px;}
+
+  /* ---------- topbar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(11,14,17,0.85);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{
+    max-width:1080px;margin:0 auto;padding:14px 28px;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .brand{
+    font-family:var(--font-mono);font-weight:600;font-size:14px;
+    letter-spacing:0.04em;
+    display:flex;align-items:center;gap:8px;
+  }
+  .brand .dot{
+    width:8px;height:8px;border-radius:50%;background:var(--accent);
+    box-shadow:0 0 8px var(--accent);
+    animation:pulse 2.2s ease-in-out infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.35;}}
+  nav{display:flex;gap:26px;font-size:13px;font-family:var(--font-mono);}
+  nav a{color:var(--muted);transition:color .15s;}
+  nav a:hover{color:var(--accent);}
+
+  /* ---------- hero ---------- */
+  .hero{
+    padding:72px 0 56px;
+    border-bottom:1px solid var(--line);
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";position:absolute;inset:0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:42px 42px;
+    opacity:0.25;
+    mask-image:linear-gradient(to bottom, black, transparent 85%);
+  }
+  .hero-grid{
+    position:relative;z-index:1;
+    display:grid;grid-template-columns:1.3fr 0.9fr;gap:40px;align-items:start;
+  }
+  .eyebrow{
+    font-family:var(--font-mono);font-size:12px;color:var(--accent);
+    letter-spacing:0.12em;text-transform:uppercase;
+    display:flex;align-items:center;gap:10px;margin-bottom:18px;
+  }
+  .eyebrow::before{content:"▌";color:var(--accent);}
+  h1{
+    font-family:var(--font-mono);
+    font-size:46px;line-height:1.12;font-weight:700;letter-spacing:-0.01em;
+    margin-bottom:18px;
+  }
+  h1 .accent{color:var(--accent);}
+  .hero p.lede{
+    color:var(--muted);font-size:16px;max-width:520px;margin-bottom:26px;
+  }
+  .cta-row{display:flex;gap:14px;flex-wrap:wrap;}
+  .btn{
+    font-family:var(--font-mono);font-size:13px;font-weight:600;
+    padding:12px 20px;border-radius:3px;
+    display:inline-flex;align-items:center;gap:8px;
+    transition:transform .15s, box-shadow .15s;
+    border:1px solid transparent;
+  }
+  .btn-solid{background:var(--accent);color:#0B0E11;}
+  .btn-solid:hover{box-shadow:0 0 0 3px var(--accent-dim);}
+  .btn-outline{border-color:var(--line);color:var(--text);}
+  .btn-outline:hover{border-color:var(--accent);color:var(--accent);}
+
+  /* status panel */
+  .status-panel{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:6px;
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    overflow:hidden;
+  }
+  .status-head{
+    padding:10px 14px;border-bottom:1px solid var(--line);
+    color:var(--muted);display:flex;justify-content:space-between;
+    background:var(--panel-2);
+  }
+  .status-body{padding:14px;}
+  .status-row{
+    display:flex;justify-content:space-between;
+    padding:7px 0;border-bottom:1px dashed var(--line);
+  }
+  .status-row:last-child{border-bottom:none;}
+  .status-row .k{color:var(--muted);}
+  .status-row .v{color:var(--text);}
+  .v.ok{color:var(--accent);}
+  .v.warn{color:var(--amber);}
+
+  /* ---------- section shells ---------- */
+  section{padding:64px 0;border-bottom:1px solid var(--line);}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:32px;}
+  .sec-num{font-family:var(--font-mono);color:var(--accent);font-size:13px;}
+  .sec-title{font-family:var(--font-mono);font-size:22px;font-weight:600;}
+  .sec-rule{flex:1;height:1px;background:var(--line);}
+
+  /* about */
+  .about-text{color:var(--muted);font-size:15.5px;max-width:760px;}
+  .about-text strong{color:var(--text);font-weight:600;}
+
+  /* skills - rack style */
+  .rack{
+    display:grid;grid-template-columns:repeat(2,1fr);gap:14px;
+  }
+  .rack-unit{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-left:3px solid var(--accent);
+    border-radius:4px;
+    padding:18px 20px;
+  }
+  .rack-unit h3{
+    font-family:var(--font-mono);font-size:13px;color:var(--accent);
+    text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;
+  }
+  .tag-row{display:flex;flex-wrap:wrap;gap:8px;}
+  .tag{
+    font-family:var(--font-mono);font-size:12px;color:var(--text);
+    background:var(--panel-2);border:1px solid var(--line);
+    padding:5px 9px;border-radius:3px;
+  }
+
+  /* experience */
+  .job{
+    display:grid;grid-template-columns:200px 1fr;gap:24px;
+    padding:24px 0;border-bottom:1px solid var(--line);
+  }
+  .job:last-child{border-bottom:none;padding-bottom:0;}
+  .job-meta{font-family:var(--font-mono);font-size:12.5px;color:var(--muted);}
+  .job-meta .role{color:var(--text);font-weight:600;font-size:14px;display:block;margin-bottom:4px;}
+  .job ul{list-style:none;display:flex;flex-direction:column;gap:9px;}
+  .job li{
+    position:relative;padding-left:18px;color:var(--muted);font-size:14.5px;
+  }
+  .job li::before{
+    content:"›";position:absolute;left:0;color:var(--accent);font-family:var(--font-mono);
+  }
+
+  /* projects */
+  .proj-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
+  .proj-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:22px;
+  }
+  .proj-card .proj-tag{
+    font-family:var(--font-mono);font-size:11px;color:var(--amber);
+    letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px;display:block;
+  }
+  .proj-card h3{font-size:16px;font-weight:600;margin-bottom:8px;}
+  .proj-card p{color:var(--muted);font-size:14px;}
+
+  /* certifications */
+  .cert-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+  .cert-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:6px;
+    padding:18px 20px;display:flex;flex-direction:column;gap:10px;
+  }
+  .cert-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+  .cert-card h3{font-size:14.5px;font-weight:600;line-height:1.35;}
+  .cert-badge{
+    font-family:var(--font-mono);font-size:10px;color:var(--bg);
+    background:var(--accent);padding:3px 7px;border-radius:3px;white-space:nowrap;
+    height:fit-content;
+  }
+  .cert-foot{
+    font-family:var(--font-mono);font-size:12px;color:var(--muted);
+    display:flex;justify-content:space-between;border-top:1px dashed var(--line);padding-top:10px;
+  }
+
+  /* footer / contact */
+  footer{padding:56px 0 60px;}
+  .contact-grid{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:24px;}
+  footer h2{font-family:var(--font-mono);font-size:26px;margin-bottom:10px;}
+  footer p{color:var(--muted);max-width:420px;}
+  .contact-links{display:flex;flex-direction:column;gap:10px;font-family:var(--font-mono);font-size:13.5px;}
+  .contact-links a{color:var(--text);border-bottom:1px solid var(--line);padding-bottom:4px;transition:color .15s,border-color .15s;}
+  .contact-links a:hover{color:var(--accent);border-color:var(--accent);}
+  .fine{margin-top:40px;color:var(--muted);font-size:12px;font-family:var(--font-mono);text-align:center;}
+
+  @media (max-width:760px){
+    .hero-grid{grid-template-columns:1fr;}
+    h1{font-size:34px;}
+    .rack,.proj-grid,.cert-grid{grid-template-columns:1fr;}
+    .job{grid-template-columns:1fr;}
+    nav{display:none;}
+    .contact-grid{flex-direction:column;align-items:flex-start;}
+  }
+
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  @media (prefers-reduced-motion: reduce){
+    .brand .dot{animation:none;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="dot"></span>DARIUS MILLS</div>
+    <nav>
+      <a href="#about">about</a>
+      <a href="#skills">skills</a>
+      <a href="#experience">experience</a>
+      <a href="#projects">projects</a>
+      <a href="#certs">certs</a>
+      <a href="#contact">contact</a>
+    </nav>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">data center technician / cybersecurity</div>
+      <h1>Keeping infrastructure <span class="accent">online</span>,<br>and threats <span class="accent">contained</span>.</h1>
+      <p class="lede">Security+ certified data center technician, IT &amp; cybersecurity student. I work hands on with servers, networks, and access systems and bring a data driven lens to incident response and threat detection.</p>
+      <div class="cta-row">
+        <a class="btn btn-solid" href="#certs">View certifications</a>
+        <a class="btn btn-outline" href="#contact">Get in touch</a>
+      </div>
+    </div>
+
+    <div class="status-panel">
+      <div class="status-head"><span>SYSTEM STATUS</span><span>node-01</span></div>
+      <div class="status-body">
+        <div class="status-row"><span class="k">role</span><span class="v">Data Center Technician</span></div>
+        <div class="status-row"><span class="k">employer</span><span class="v">DataBank</span></div>
+        <div class="status-row"><span class="k">location</span><span class="v">Manhattan, NY</span></div>
+        <div class="status-row"><span class="k">uptime_since</span><span class="v ok">Nov 2025</span></div>
+        <div class="status-row"><span class="k">certification</span><span class="v ok">Security+</span></div>
+        <div class="status-row"><span class="k">cred_count</span><span class="v warn">8 / Google Cybersecurity</span></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="about">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">01</span><span class="sec-title">About</span><span class="sec-rule"></span></div>
+    <p class="about-text">
+      I'm a <strong>Security+ certified data technician</strong> and IT &amp; cybersecurity student, skilled in <strong>data security</strong>, <strong>firewall configuration</strong>, and <strong>threat detection</strong>. Detail oriented and analytical, with hands on experience in <strong>cyber forensics</strong> and a habit of leveraging data driven insight to support operational decisions whether that's racking a server, configuring access controls, or spotting an anomaly in the logs. I work well in teams and care about getting the small, easy to miss details right, because in infrastructure and security, those are usually the details that matter most.
+    </p>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">02</span><span class="sec-title">Skills</span><span class="sec-rule"></span></div>
+    <div class="rack">
+      <div class="rack-unit">
+        <h3>Security &amp; Networking</h3>
+        <div class="tag-row">
+          <span class="tag">Network Security</span>
+          <span class="tag">TCP/IP</span>
+          <span class="tag">DNS</span>
+          <span class="tag">DHCP</span>
+          <span class="tag">HTTP/HTTPS</span>
+          <span class="tag">SIEM Fundamentals</span>
+          <span class="tag">Log Analysis</span>
+          <span class="tag">Vulnerability Concepts</span>
+          <span class="tag">Access Control</span>
+          <span class="tag">IAM Principles</span>
+          <span class="tag">Incident Response Basics</span>
+        </div>
+      </div>
+      <div class="rack-unit">
+        <h3>Cloud &amp; Infrastructure</h3>
+        <div class="tag-row">
+          <span class="tag">Cloud Computing Fundamentals</span>
+          <span class="tag">Google Data Center Operations</span>
+          <span class="tag">Virtual Machines</span>
+          <span class="tag">Linux Fundamentals</span>
+          <span class="tag">Windows Administration</span>
+          <span class="tag">Infrastructure Support</span>
+        </div>
+      </div>
+      <div class="rack-unit">
+        <h3>Tools &amp; Platforms</h3>
+        <div class="tag-row">
+          <span class="tag">Wireshark</span>
+          <span class="tag">Excel</span>
+          <span class="tag">Google Sheets</span>
+          <span class="tag">Power BI</span>
+          <span class="tag">SQL</span>
+          <span class="tag">Python</span>
+          <span class="tag">Microsoft Office</span>
+          <span class="tag">Google Workspace</span>
+        </div>
+      </div>
+      <div class="rack-unit">
+        <h3>Data Center Operations</h3>
+        <div class="tag-row">
+          <span class="tag">Server Racking &amp; Decommissioning</span>
+          <span class="tag">Hardware Troubleshooting</span>
+          <span class="tag">Cable Management</span>
+          <span class="tag">System Monitoring</span>
+          <span class="tag">Ticketing Workflows</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">03</span><span class="sec-title">Experience</span><span class="sec-rule"></span></div>
+    <div class="job">
+      <div class="job-meta">
+        <span class="role">Data Center Technician</span>
+        DataBank<br>Manhattan, NY<br>Nov 2025 – Present
+      </div>
+      <ul>
+        <li>Supported daily operations within Google data center environments, ensuring high availability and infrastructure reliability for mission-critical systems.</li>
+        <li>Installed, racked, configured, and decommissioned servers, storage devices, and network hardware.</li>
+        <li>Performed hardware diagnostics, component replacements, and structured cable management.</li>
+        <li>Applied security and access control procedures aligned with enterprise and cloud data center best practices.</li>
+        <li>Reset passwords and unlocked accounts in Okta.</li>
+        <li>Provisioned/deprovisioned user accounts and managed group memberships and permissions.</li>
+        <li>Managed MFA enrollment and troubleshooting.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">04</span><span class="sec-title">Projects</span><span class="sec-rule"></span></div>
+    <div class="proj-grid">
+      <div class="proj-card">
+        <span class="proj-tag">Coursework · 2024</span>
+        <h3>Data Analysis Project</h3>
+        <p>Cleaned and visualized cybersecurity incident data in Excel and Power BI, identifying trends and improving reporting efficiency.</p>
+      </div>
+      <div class="proj-card">
+        <span class="proj-tag">Google Cybersecurity Certificate</span>
+        <h3>Network Security Lab</h3>
+        <p>Configured systems to monitor data traffic and identify potential threats, applying data logging and analysis methods.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="certs">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">05</span><span class="sec-title">Certifications</span><span class="sec-rule"></span></div>
+    <div class="cert-grid">
+      <div class="cert-card">
+        <div class="cert-top"><h3>CompTIA Security+</h3><span class="cert-badge">CompTIA</span></div>
+        <div class="cert-foot"><span>Industry Certification</span><span>April 2026</span></div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-top"><h3>Put It to Work: Prepare for Cybersecurity Jobs</h3><span class="cert-badge">Google</span></div>
+        <div class="cert-foot"><span>Coursera</span><span>March 2025</span></div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-top"><h3>Automate Cybersecurity Tasks with Python</h3><span class="cert-badge">Google</span></div>
+        <div class="cert-foot"><span>Coursera</span><span>February 2025</span></div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-top"><h3>Sound the Alarm: Detection and Response</h3><span class="cert-badge">Google</span></div>
+        <div class="cert-foot"><span>Coursera</span><span>December 2024</span></div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-top"><h3>Assets, Threats, and Vulnerabilities</h3><span class="cert-badge">Google</span></div>
+        <div class="cert-foot"><span>Coursera</span><span>June 2024</span></div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-top"><h3>Tools of the Trade: Linux and SQL</h3><span class="cert-badge">Google</span></div>
+        <div class="cert-foot"><span>Coursera</span><span>February 2024</span></div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-top"><h3>Connect and Protect: Networks and Network Security</h3><span class="cert-badge">Google</span></div>
+        <div class="cert-foot"><span>Coursera</span><span>October 2023</span></div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-top"><h3>Play It Safe: Manage Security Risks</h3><span class="cert-badge">Google</span></div>
+        <div class="cert-foot"><span>Coursera</span><span>August 2023</span></div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-top"><h3>Foundations of Cybersecurity</h3><span class="cert-badge">Google</span></div>
+        <div class="cert-foot"><span>Coursera</span><span>July 2023</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="contact-grid">
+      <div>
+        <h2>Open to entry level cybersecurity and IT support roles.</h2>
+        <p>Reach out below.</p></div>
+      <div class="contact-links">
+        <a href="mailto:dariusmills8@gmail.com">dariusmills8@gmail.com</a>
+        <a href="https://www.linkedin.com/in/darius-mills-21b91131a/" target="_blank">linkedin.com/in/darius-mills</a>
+      </div>
+    </div>
+    <div class="fine">© 2026 Darius Mills — built from the ground up, like the racks I manage.</div>
+  </div>
+</footer>
+
+</body>
+</html>
